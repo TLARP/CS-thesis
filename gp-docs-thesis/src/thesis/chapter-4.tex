@@ -151,35 +151,152 @@ CP(d$_{I}$)来判断区间内部数据的值是否达到了极限，当区间内
 \begin{algorithmic}[1]
 % enter the algorithmic environment
 \REQUIRE 需要合并前的区间列表IL(D$_{i}$),CP(D$_{i}$),Grad(D$_{i}$) 
-\ENSURE 通过合并算法之后产生的新的区间列表
-
-\FOR{($i=1$ to N)}
-\STATE Max(D$_{i}$)=0;Min(D$_{i}$)=0;IL(D$_{i}$)=[];
-\STATE Grad(D$_{i}$)=CP(D$_{}i$)*k;
+\ENSURE 通过合并算法之后产生的新的区间列表IL(D$_{i}$)
+\STATE  R(D$_{i}$)=(Max(D$_{i}$)-Min(D$_{i}$))/Grad(D$_{i}$)
+\FOR{($i=1$ to |IL(D$_{i}$)-1|)}
+\STATE{	\IF {$( \exists x <Grad(D_{i}) \AND I_{i}.v_{min} \geq  Min(D_{i})+x*R(D_{i}) \AND I_{i}.v_{max}<Min(D_{i})+(x+1)*R(
+		D_{j}) \AND I_{i+1}.v_{min} \geq Min(D_{i})+x*R(D_{i}) \AND I_{i+1}.v_{max}<Min(D_{i})+(x+1)*R(D_{i}))$}
+		\STATE $I_{i}=MI(I_{i},I_{i+1})$
+		\ENDIF
+	}
 \ENDFOR
-\WHILE{(未达到输入数据D结束位置，且下一条数据记录为D$_{t}$)}
-\STATE 	{\FOR{$i=1$ to $N$}
-		\STATE Max(D$_{i}$)=MAX(Max(D$_{i}$),d$_{it}$);
-		\STATE Min(D$_{i}$)=MIN(Min(D$_{i}$),d$_{it}$);
-		\STATE I$_{last}$=IL(D$_{i}$)的最后一个区间；
-		\IF{($ d_{it} \geq I_{last} \times v_{min}  \AND d_{it} \leq I_{last} \times v_{max} )$}
-		\STATE $ I_{last} = EI(I_{last},d_{it}) $
-		\ELSE  
-		\STATE $ IL(D_{i}) push EC(d_{it}) $
-		\ENDIF
-		\IF{($   |IL(D_{i})|  > CP(D{i})   $)}
-		\STATE $ IL(D_{i})=MergeInternal(IL(D_{i}),CP(D_{i}),Grad(D_{i})) $
-		\ENDIF
-		\ENDFOR
+
+\WHILE {$(|IL(D_{i})|>CP(D_{i}))$}
+\STATE{	\STATE $Grad(D_{i})=Grad(D_{i}/2)$
+		\STATE $ R(D_{i})=(Max(D_{i})-Min(D_{i}))/Grad(D_{i})$
+		\FOR   {$i=1 to |IL(D_{i})|$}
+		\STATE{
+			\IF{$( 	 \exists x <Grad(D_{i}) \AND I_{i}.v_{min} \geq  Min(D_{i})+x*R(D_{i}) \AND I_{i}.v_{max}<Min(D_{i})+(x+1
+			)*R(D_{j}) \AND I_{i+1}.v_{min} \geq Min(D_{i})+x*R(D_{i}) \AND I_{i+1}.v_{max}<Min(D_{i})+(x+1)*R(D_{i})    )$}
+			\STATE $I_{i}=MI(I_{i},I_{i+1})$
+			\ENDIF
 		}
+		\ENDFOR
+}
 \ENDWHILE
-\STATE IL=[$ IL(D_{1}),IL(D_{2}...IL(D_{n}) $];
-\RETURN GenData(IL);
+\RETURN IL(D$_{i}$)
 \end{algorithmic}
 \end{algorithm}
+
+
+\subsection{数据生成算法GenData}
+\label{section 4.16}
+
+根据事先设置的梯度Grad(D_${i}$),来判断数据点D$_{i}$,能否插入到设定的区间，当合并完成之后，如果计算出IL(D$_{i}$)仍然是大于CP(D$_{i}$),则
+通过降低Grad的值来重新进行合并，通过循环检测条件来判断区间是否满足最终的要求。
+
+
+\begin{algorithm}
+% enter the algorithm environment
+\caption{数据生成算法GenData}
+% give the algorithm a caption
+\label{alg3}
+% and a label for \ref{} commands later
+\begin{algorithmic}[1]
+\REQUIRE 通过区间合并算法生成的序列IL
+\ENSURE 压缩后的最终数据
+\STATE IL=[]
+\FOR{$(i=1 to N)$}
+\STATE{
+	\FOR{$(j=1 to |IL(D_{i})|)$}
+	\STATE $TL.push({IL(D_{i}}_{j},t_{s})$
+	\STATE $TL.push({IL(D_{i}}_{j},t_{e}))$
+	\ENDFOR
+	
+}
+\ENDFOR
+
+\STATE 对TL中的时间标签从小到大按时间排序
+\STATE 删除TL中是多余时间标签
+
+\FOR {$(j=1 to |TL|)$}
+	\STATE 对应输出TL$_{i}$所属的IL(D$_{i}$)区间的平均值
+\ENDFOR
+\RETURN VOID
+\end{algorithmic}
+\end{algorithm}
+
+数据生成算法，首先将所有分量的时间标签放入到一个列表中，经过排序去重之后，通过遍历IL来生成新的数据，生成的新的数据结果采用的是计算出的平均值。
 
 
 \section{时序数据可视化}
 \label{section 4.2}
 
-可视化部分
+时序数据的预处理是指将时序数据转化为数据区间列表的过程，论文中定义的区间R=$<v_{s},v_{e},v_{max},v_{min},v_{avg},v_{var}>$,其中v$_{s}$
+表示时序数据的开始值，v$_{e}$表示时序数据的结束值，v$_{max}$表示时序数据的最大值，v$_{min}$表示时序数据的最小值，v$_{avg}$
+表示时序数据计算出的平均值，v$_{var}$表示时序数据的标准差。
+
+
+对于给定的区间大小H,时序数据预处理的过程是对连续的H个数据点按照顺序进行扫描，在扫描的过程中，计算这些数据的统计信息，我们将连续的H个数据点计算出
+它的最大值最小值平均值和标准差，我们选择区间的开始值，结束值，区间最大值，区间最小值，平均值和标准差作为统计信息是因为这些信息反映了一个区间内数据
+的基本特征，并且这些统计数据再区间合并的操作过程中具有良好的特性，沃恩可以根据相邻两个区间的值，直接计算出合并之后的统计 
+数据，这样就大大减少了算法的耗时。
+
+\subsection{时序数据预处理}
+\label{section 4.21}
+
+
+\begin{algorithm}
+% enter the algorithm environment
+\caption{时序数据预处理算法PreProcess}
+% give the algorithm a caption
+\label{alg4}
+% and a label for \ref{} commands later
+\begin{algorithmic}[1]
+\REQUIRE 分隔区间的大小H，原始数据序列S
+\ENSURE 区间列表R
+\STATE COUNTER=0
+\FOR{$(d=1 to |S.length|)$}
+\IF{(COUNTER\%H==0)}
+\STATE 创建一个新的区间 I=<d,d,d,d,d,0>
+\ELSE{
+	\STATE num=(counter\%H+1)
+	\STATE $I=<I.v_{s},d,MAX(I.v_{max},d),MIN(I.v_{min},d),(I.v_{avg}*num+d)/(num+1),i.var+d*d>$
+	\IF{COUNTER\%H==H-1}
+	\STATE $I=<I.v_{s},d,MAX(I.v_{max},d),MIN(I.v_{min},d),(I.v_{avg}*num)/(num+1),sqrt(i.var-i.v_{avg}/H)>$
+	\STATE RL.push(I)
+	\ENDIF
+}
+\STATE 
+\ENDIF
+\ENDFOR
+\RETURN RL
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{时序数据可视化}
+\label{section 4.22}
+
+时序数据首先通过预处理之后，数据会被分隔为多个区间长度为H的数据区间，并存储再关系数据库当中，本论文中采取的是SQLite，之后，时序数据的可视化都可以
+以这些数据为基础来完成，当然考虑到原始数据量的规模很大，因此即使压缩为数据区间之后，有可能区间的个数还是很多，如果我们选取区间的总数为100，并假设
+所有的数据量为100万，那么压缩过后仍有有万条数据，如果全部显示肯定是不现实的，那么环一个思路，假设我们将H设置为10000，那么我们获取到的数据点数变
+为了100，此时数据的局部信息丢失的情况很有可能变得严重，在算法中，我们将合并的粒度设置为灵活可变，也就是最终的区间密度可以由用户指定，
+
+定义初始化处理完的数据为元数据，并且由于默认的区间值为H。对于每个区间我们定义 R=$<v_{s},v_{e},v_{max},v_{min},v_{avg},v_{var}>$
+，设置数据的区间大小为kH，那么以kH为区间大小的区间数据我们设置为:
+\begin{equation}
+$R^{'}=<v_{s}^{'},v_{e}^{'},v_{max}^{'},v_{min}^{'},v_{avg}^{},v_{var}^{'}>$
+\end{equation}
+那么需要合并的元数据区间中，第i个数据区间的数据为:
+\begin{equation}
+$R=<v_{si},v_{ei},v_{maxi},v_{mini},v_{avgi},v_{vari}>$
+\end{equation}
+存在如下表达式:
+\newline
+\alpha_{s}=v_{s}
+\newline
+\alpha_{e}=v_{e}
+\newline
+\alpha_{max}=max(v_{1max},v_{2max}...v_{kmax})
+\newline
+\alpha_{min}=min(v_{1min},v_{2min}...v_{kmax})
+\newline
+\alpha = 1/k*\sum_{n=1}^Nv_{javg}
+\newline
+\alpha_{var}^{2}*1/k=\sum_{n=1}^kv_javg^2+\sum_{n=1}^kv_jvar^2+{\sum_{n=1}^kv_javg}^2
+\newline
+
+基于上面的公式我们可以计算出kH区间长度的数据区间特征值的方法，对于R$^{'}$中的开始值结束值最大值最小值平均值，计算都非常简洁，对于标准差的计算可
+通过对应的表达式计算出，通过将$\alpha_{var}^2$与合并的k个元数据区间的方差之和做减法计算，消去原始数据即可以得到R$^{'}$的计算表达式。
+
