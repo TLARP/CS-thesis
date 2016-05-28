@@ -1,0 +1,127 @@
+%% LaTeX source of the thesis.
+%% Use command 'xelatex --shell-escape thesis.tex' TWICE to compile it into a PDF.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% document preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt, oneside, a4paper]{book}
+
+\usepackage[UTF8]{ctex}			% for high level Chinese environment
+\usepackage{caption}
+\usepackage{enumerate}			% for customized list numbering
+\usepackage{hyperref}			% for bookmarks and hyperlinks
+\usepackage{amsmath}			% for mathematical features
+\usepackage{amssymb}			% for mathematical symbols
+\usepackage{amsthm}			% for theorems
+\usepackage[chapter]{algorithm}		% for floated algorithm environment
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{algorithmicx}		% for enhanced algorithm features
+\usepackage{algpseudocode}		% for pseudo code algorithms
+\usepackage{svg}			% for svg images
+\usepackage{listings}			% for source code listing
+\usepackage{color}			% for customized colors
+% \usepackage{showframe}			% for showing page frames
+\usepackage[BITstyle]{bitbook}		% for BIT-style thesis
+
+% hyperref options
+\hypersetup{
+	% hide links
+	hidelinks,
+	% number bookmarks
+	bookmarksnumbered = true,
+	% fit width
+	pdfstartview = {FitH},
+	% PDF title
+	pdftitle = {Zhuojia Shen's Undergraduate Thesis},
+	% PDF subject
+	pdfsubject = {Research in Embedding of Hypercubes into Circles},
+	% PDF author
+	pdfauthor = {Zhuojia Shen},
+	% PDF keywords 
+	pdfkeywords = {Hypercube; Circular embedding; Wirelength problem; Distributed computing}
+}
+
+% theorems
+\newtheorem{theorem}{定理}[chapter]
+\newtheorem{lemma}{引理}[chapter]
+
+% algorithm settings
+\floatname{algorithm}{算法}
+\renewcommand{\algorithmicrequire}{\textbf{输入：}}
+\renewcommand{\algorithmicensure}{\textbf{输出：}}
+
+% svg options
+\setsvg{
+	svgpath = {./images/},		% svg directory
+	inkscape = {inkscape -z -D}	% Inkscape command
+}
+
+% listings settings
+\definecolor{commentgreen}{rgb}{0, 0.6, 0}
+\definecolor{stringbrown}{rgb}{0.75, 0.5, 0}
+\lstset{
+	basicstyle = \ttfamily\footnotesize,
+	tabsize = 2,
+	showstringspaces = false,
+	% highlight styles
+	commentstyle = \color{commentgreen},
+	keywordstyle = \color{blue},
+	stringstyle = \color{stringbrown}
+}
+
+% BIT-style
+\pagestyle{thesisbit}
+\tocdepth{3}
+
+% ctex settings
+% \ctexset{
+% 	chapter = {
+% 		number = \arabic{chapter},
+% 		format = \bfseries\songti\zihao{3}
+% 	},
+% 	section = {
+% 		% number = \arabic{chapter},
+% 		format = \bfseries\songti\zihao{4}
+% 	},
+% 	subsection = {
+% 		format = \bfseries\songti\zihao{-4}
+% 	}
+% }
+
+
+% list of files to include
+\includeonly{
+	abstract,
+	chapter-1,
+	chapter-2,
+	chapter-3,
+	chapter-4,
+	chapter-5,
+	chapter-6,
+	acknowledgements,
+	bibliography,
+	appendices
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% document body %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\zihao{-4}\ziju{0.1}
+\baselineskip 22pt
+
+\include{abstract}
+\tableofcontents
+\include{chapter-1}
+\include{chapter-2}
+\include{chapter-3}
+\include{chapter-4}
+\include{chapter-5}
+\include{chapter-6}
+\include{acknowledgements}
+\include{bibliography}
+\include{appendices}
+
+\end{document}
