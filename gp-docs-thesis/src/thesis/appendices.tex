@@ -1,16 +1,626 @@
 %% LaTeX source of Appendices of the thesis.
 %% NEVER compile this file. Complie 'thesis.tex' instead.
 
-\appendix{测试}
+\appendix{时序模拟和时序压缩}
+\label{Appendix A}
 
-\section{附录节测试}
+\section{GenData.java}
+\label{Section A.1}
 
-附录的节和 chapter 的一样。
+\begin{lstlisting}[language = Java]
+package cn.BITCS.DataBase;
 
-\subsection{附录小节测试}
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Random;
 
-附录的小节和 chapter 的一样。
+public class DataGen
+{
+	private ArrayList<String> Array;
+	
+	public void Init()
+	{
+		int i=0;
+		Array=new ArrayList<String> ();
+		
+		Array.add(0, "0");
+		Array.add(1, "null");
+		
+		for(i=2;i<=5;i++)
+		{
+			Array.add(i, GenerateDouble().toString());
+		}
+		
+		for(i=6;i<=7;i++)
+		{
+			Array.add(i, GenerateBoolean().toString());
+		}
+		
+		Array.add(8, GenerateDouble().toString());
+		
+		for(i=9;i<=11;i++)
+		{
+			Array.add(i, GenerateBoolean().toString());
+		}
+		
+		for(i=12;i<=51;i++)
+		{
+			Array.add(8, GenerateDouble().toString());
+		}
+		
+		Array.add(52, GenerateInteger().toString());
+		
+		for(i=53;i<=57;i++)
+		{
+			Array.add(8, GenerateDouble().toString());
+		}
+		
+		for(i=58;i<=63;i++)
+		{
+			Array.add(i, GenerateBoolean().toString());
+		}
+		
+		for(i=64;i<=77;i++)
+		{
+			Array.add(i, GenerateDouble().toString());
+		}
+		
+		Array.add(78, GenerateBoolean().toString());
+		
+		for(i=79;i<=87;i++)
+		{
+			Array.add(i, GenerateDouble().toString());
+		}
+		
+	}
+	
+	private int i=0;
+	
+	public void Insert() throws SQLException, FileNotFoundException
+	{
+		InsertInto PreInsert=new InsertInto();
+		PreInsert.insert(Array);
+	}
+	
+	private Double GenerateDouble()
+	{
+		Random RandomNumber=new Random(1000);
+		Double Number=RandomNumber.nextDouble()*1000;
+		if(Number%1000>=970)
+		{
+			Number=Number%5+10.0;
+		}
+		else
+		{
+			Number=10.0+Number%1.0;
+		}
+		
+		return Number;
+		
+	}
+	
+	private Integer GenerateBoolean()
+	{
+		Random RandomNumber=new Random();
+		Integer Number=RandomNumber.nextInt();
+		if(Number%1000>990)
+			return 1;
+		else return 0;
+	}
+	
+	private Integer GenerateInteger()
+	{
+		Random RandomNumber=new Random();
+		Integer Number=RandomNumber.nextInt();
+		return Number%5;
+		
+	}
+}
+\end{lstlisting}
 
-\appendix{}
+\clearpage
 
-这是附录 B。
+\clearpage
+\section{Instance.java}
+\label{Section A.2}
+
+\begin{lstlisting}[language = Java]
+package cn.BITCS.DataBase;
+import java.sql.*;
+
+public class Instance{
+	public static void main(String[] args) {
+			try {
+				Class.forName("org.sqlite.JDBC");
+				Connection conn =DriverManager.getConnection("jdbc:sqlite:info");
+				Statement stat = conn.createStatement();
+				stat.executeUpdate("drop table if exists people;");
+				stat.executeUpdate("create table people (name, occupation);");
+				PreparedStatement prep = conn.prepareStatement("insert into people values (?, ?);");
+
+				prep.setString(1, "Gandhi");
+				prep.setString(2, "politics");
+				prep.addBatch();
+				prep.setString(1, "Turing");
+				prep.setString(2, "computers");
+				prep.addBatch();
+				prep.setString(1, "Wittgenstein");
+				prep.setString(2, "smartypants");
+				prep.addBatch();
+
+				conn.setAutoCommit(false);
+				prep.executeBatch();
+				conn.setAutoCommit(true);
+
+				ResultSet rs = stat.executeQuery("select * from people;");
+				while (rs.next()) {
+				  System.out.println("name = " + rs.getString("name"));
+				  System.out.println("job = " + rs.getString("occupation"));
+				}
+				rs.close();
+				conn.close();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}\end{lstlisting}
+
+\section{Compress.java}
+\label{Section A.3}
+
+\begin{lstlisting}[language = Java]
+package cn.BITCS.SeqDataPre;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+public class Compress{
+	
+	public void VictorSet()
+	{
+		
+	}
+	
+	public void Scanner(int i2) throws ClassNotFoundException, SQLException
+	{
+		Class.forName("org.sqlite.JDBC");
+		Connection conn =DriverManager.getConnection("jdbc:sqlite:info");
+		Statement stat = conn.createStatement();
+		
+	     ResultSet rs = stat.executeQuery("select count(*) from DataCompress" );
+	     
+	     
+
+	     if (rs.next()) 
+	       {
+	            Count = rs.getInt(1); 
+	       }
+	     
+	     String SqlStatement="select * from DataCpress";
+	     
+	     int i=0;
+	     for(i=2;i<=88;i++)
+	     {
+	     
+	     stat.executeUpdate(SqlStatement);
+	     
+	     rs=stat.executeQuery(SqlStatement);
+	     
+	     Area area=new Area();
+	     
+	     area.setStart(0);
+	     
+	     while(rs.next())
+	     {
+	    	 if(rs.getDouble(2)>11.0)
+	    	 {
+	    		 area.setOver(rs.getRow());
+	    		 Array.add(area);
+	    		 area=new Area();
+	    	 }
+	    	 
+	    	 if(new Integer(area.getMax())<new Integer(rs.getString(i)))
+	    	 {
+	    		 area.setMax(rs.getString(i));
+	    	 }
+	    	 
+	    	 if(new Integer(area.getMax())<new Integer(rs.getString(i)));
+	    	 {
+	    		 area.setMax(rs.getString(i));
+	    	 }
+	    	 
+	    	 if(new Integer(area.getMin())>new Integer(rs.getString(i)))
+	    	 {
+	    		 area.setMin(rs.getString(i));
+	    	 }
+	     }
+	    }
+	     
+	}
+	
+	public void insert() throws ClassNotFoundException, SQLException
+	{
+		Class.forName("org.sqlite.JDBC");
+		Connection conn =DriverManager.getConnection("jdbc:sqlite:info");
+		Statement stat = conn.createStatement();
+		int i=0;
+		
+		
+		
+		while(Array.get(i) != null)
+		{
+			String Data=Array.get(i).getAverage();
+			stat.executeQuery("insert into data"+Data);
+		}
+		
+		
+	}
+	
+	private ArrayList <Area> Array;
+	
+	private Integer Count;
+	
+}
+\end{lstlisting}
+
+\section{TextAreaOutputSteamTest.java}
+\label{Section A.4}
+
+\begin{lstlisting}[language=java]
+package cn.BITCS.SeqDataPre;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.PrintStream;
+import javax.swing.*;
+
+@SuppressWarnings("serial")
+public class TextAreaOutputStreamTest extends JPanel {
+
+   private JTextArea textArea = new JTextArea(15, 30);
+   private TextAreaOutputStream taOutputStream = new TextAreaOutputStream(
+         textArea, "Test");
+
+   public TextAreaOutputStreamTest() {
+      setLayout(new BorderLayout());
+      add(new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+      System.setOut(new PrintStream(taOutputStream));
+
+      int timerDelay = 1000;
+      new Timer(timerDelay , new ActionListener() {
+         int count = 0;
+         @Override
+         public void actionPerformed(ActionEvent arg0) {
+
+            // though this outputs via System.out.println, it actually displays
+            // in the JTextArea:
+            System.out.println("Count is now: " + count + " seconds");
+            count++;
+         }
+      }).start();
+   }
+
+   private static void createAndShowGui() {
+      JFrame frame = new JFrame("Test");
+      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      frame.getContentPane().add(new TextAreaOutputStreamTest());
+      frame.pack();
+      frame.setLocationRelativeTo(null);
+      frame.setVisible(true);
+   }
+
+   public static void main(String[] args) {
+      SwingUtilities.invokeLater(new Runnable() {
+         public void run() {
+            createAndShowGui();
+         }
+      });
+   }
+}
+\end{lstlisting}
+
+
+\appendix{echarts 绘图示例代码}
+\label{Appendix B}
+
+\section{candlestick.html}
+\label{Section B.1}
+
+\begin{lstlisting}[language = javascript]
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>时序数据压缩</title>
+	<script type="text/javascript" src="jquery-1.12.3.min.js"></script>
+</head>
+
+<body>
+		<br/>
+		<canvas id="maincanvas" height="650px" width="1500px"></canvas>
+		<script type="text/javascript">
+			var canvas=document.getElementById("maincanvas");
+			var ctx=canvas.getContext('2d');
+			ctx.font="15px Georgia";
+			ctx.fillText("时间",1210,610);
+
+
+			function paintline(start_x,start_y,end_x,end_y){
+				ctx.moveTo(start_x,start_y);
+			    ctx.lineTo(end_x,end_y);
+			    ctx.stroke();
+			}
+
+			function spalit_data(argument){
+				var categrayData=[];
+				var values=[];
+				for(var i=0;i<argument.length;i++){
+					categrayData.push(i+1);
+					values.push(argument[i]);
+				}
+
+				return {categrayData:categrayData,
+						values:values
+					};
+			}
+
+
+			//x axis
+			paintline(100,580,1210,580);
+
+			//y axis
+			paintline(100,580,100,0);
+
+			//x axis arrow
+			paintline(1210,580,1200,570);
+			
+			paintline(1210,580,1200,590);
+
+			//y axis arrow 
+			paintline(100,0,90,10);
+
+			paintline(100,0,110,10);
+
+
+			function load_fromdata() {
+					var text=document.getElementById("json").value;
+					var jsondata=JSON.parse(text);
+					
+					data0=spalit_data(jsondata);
+
+					var array=[];
+					var ystart=0;
+					var yend=0;
+
+					for(var i=0;i<data0.values.length;i++){
+						var length=data0.values[i].length;
+						var start_value=data0.values[i][0];
+						var end_value=data0.values[i][length-1];
+						//document.write(data0.values[i]+'#');
+						data0.values[i].sort(function(n1,n2){return n1-n2;});
+						//document.write(data0.values[i]+'@');
+						var min=data0.values[i][0];
+						var max=data0.values[i][length-1];
+						var Q1=data0.values[i][Math.floor(length/4)];
+						var Media=data0.values[i][Math.floor(length/2)];
+						var Q3=data0.values[i][Math.floor(length*3/4)];
+						var IRQ=Q3-Q1;
+						var count_max=Math.floor(Q3+1.5*IRQ);
+						var count_min=Math.floor(Q1-1.5*IRQ);
+						if(count_min<0)
+							count_min=0;
+
+						var ele={
+							start_value:start_value,
+							end_value:end_value,
+							Q1:Q1,
+							Q3:Q3,
+							Media:Media,
+							max:max,
+							min:min,
+							count_min:count_min,
+							count_max:count_max,
+							array:data0.values[i]
+						}
+
+						if(count_max>yend)
+							yend=count_max;
+
+						if(i==0&&count_min>0)
+							ystart=count_min;
+
+						if(i!=0&&count_min<ystart)
+							ystart=count_min;
+
+						array.push(ele);
+					}
+
+					
+					var distance=(yend-ystart)/10;
+
+					for(var i=0;i<=10;i++){
+						paintline(100,580-56*i,80,580-56*i);
+						ctx.fillText(Math.floor(ystart+distance*i),30,580-56*i);
+					}
+
+					for(var i=1;i<=data0.values.length;i++){
+
+						var color='#FF0000';
+
+						if(array[i-1].start_value>array[i-1].end_value)
+							color='#0000FF';
+
+						var distancex=1100/7;
+						ctx.fillStyle=color;
+						ctx.fillText(data0.categrayData[i-1],distancex*i,600);
+						var xcood=distancex*i;
+
+						//var count_up_Q3=0;
+						//var count_media=0;
+						//var count_down_Q1=0;
+
+						//for(var j=0;j<array[i-1].array.length;j++){
+						//	if(array[i-1].array[j]>array[i-1].Q3&&array[i-1].array[j]<=array[i-1].count_max)
+						//		count_up_Q3++;
+						//	else if(array[i-1].array[j]<=array[i-1].Q3&&array[i-1].array[j]>array[i-1].Q1)
+						//		count_media++;
+						//	else if(array[i-1].array[j]<=array[i-1].Q1&&array[i-1].array[j]>array[i-1].count_min)
+						//		count_down_Q1++;
+							/*else{
+								var ycood_circle=580-(array[i-1].array[j]-ystart)/distance*56;
+								if(array[i-1].array[j]>yend)
+									ycood_circle=580-(yend-ystart)/distance*56;
+								ctx.fillStyle=color;
+								ctx.beginPath();
+								//document.write(array[i-1].array[j]+'@'+ystart+'@'+xcood+'@'+ycood_circle);
+								ctx.arc(xcood,ycood_circle,10,0,2*Math.PI);
+								ctx.fill();
+							}
+							*/
+						//}
+
+						//var counter=count_up_Q3+count_media+count_down_Q1;
+						
+
+						var ycood_max=580-(array[i-1].max-ystart)/distance*56;
+						//paintline(xcood+20,ycood_max,xcood+60,ycood_max);
+
+						var ycood_min=580-(array[i-1].min-ystart)/distance*56;
+						//paintline(xcood+20,ycood_min,xcood+60,ycood_min);
+
+
+						var ycood_start=580-(array[i-1].start_value-ystart)/distance*56;
+						//paintline(xcood+20,ycood_start,xcood+80,ycood_start);
+						//ctx.fillText('S',xcood+80,ycood_start);
+
+						var ycood_end=580-(array[i-1].end_value-ystart)/distance*56;
+						//paintline(xcood+20,ycood_end,xcood+80,ycood_end);
+						//ctx.fillText('E',xcood+80,ycood_end);
+
+
+						//document.write(ycood_min+'#');
+						//document.write(ycood_max+'#');
+						//document.write(ycood_start+'#');
+						//document.write(ycood_end+'#@@@@@@@');
+
+						var ycood_count_min=580-(array[i-1].count_min-ystart)/distance*56;
+						//paintline(xcood+20,ycood_count_min,xcood+30,ycood_count_min);
+						for(var j=0;j<8;j++){
+							if(j%2==0)
+								paintline(xcood+20+j*5,ycood_count_min,xcood+25+j*5,ycood_count_min);
+						}
+						//if(ycood_count_min>ycood_start&&ycood_count_min<ycood_end){
+						//}
+						//else if(ycood_count_min<ycood_start&&ycood_count_min>ycood_end){
+						//}
+						//else{
+
+						//	ctx.fillStyle=color;
+						//	ctx.beginPath();
+						//	ctx.arc(xcood,ycood_count_min,10,0,2*Math.PI);
+						//	ctx.fill();
+						//}
+						
+
+						var ycood_count_max=580-(array[i-1].count_max-ystart)/distance*56;
+						for(var j=0;j<8;j++){
+							if(j%2==0)
+								paintline(xcood+20+j*5,ycood_count_max,xcood+25+j*5,ycood_count_max);
+						}
+						//paintline(xcood+20,ycood_count_max,xcood+30,ycood_count_max);
+						//if(ycood_count_max>ycood_start&&ycood_count_max<ycood_end){
+							
+						//}
+						//else if(ycood_count_max<ycood_start&&ycood_count_max>ycood_end){
+						//}
+						//else{
+
+						//	ctx.fillStyle=color;
+						//	ctx.beginPath();
+						//	ctx.arc(xcood,ycood_count_max,10,0,2*Math.PI);
+						//	ctx.fill();
+						//}
+						
+
+						var ycood_Q3=580-(array[i-1].Q3-ystart)/distance*56;
+						paintline(xcood+20,ycood_Q3,xcood+50,ycood_Q3);
+						//ctx.fillText('Q3',xcood+50,ycood_Q3);
+
+
+						var ycood_Q1=580-(array[i-1].Q1-ystart)/distance*56;
+						paintline(xcood+20,ycood_Q1,xcood+50,ycood_Q1);
+						//ctx.fillText('Q1',xcood+50,ycood_Q1)
+
+
+
+
+
+						/*ctx.globalAlpha=count_up_Q3/counter*0.8;
+						ctx.rect(xcood-20,ycood_count_max,40,ycood_Q3-ycood_count_max);
+
+						ctx.fillStyle=color;
+
+						ctx.fill();
+
+
+						ctx.globalAlpha=count_media/counter*0.8;
+
+						ctx.rect(xcood-20,ycood_Q3,40,ycood_Q1-ycood_Q3);
+						ctx.fillStyle=color;
+
+						ctx.fill();
+
+						ctx.globalAlpha=count_down_Q1/counter*0.8;
+						ctx.rect(xcood-20,ycood_Q1,40,ycood_count_min-ycood_Q1);
+
+						ctx.fillStyle=color;
+
+						ctx.fill();
+						*/
+						ctx.globalAlpha=0.9;
+						ctx.fillStyle=color;
+						if(ycood_start<=10)
+							ycood_start=20;
+						if(ycood_end<=10)
+							ycood_end=20;
+
+						if(array[i-1].start_value>array[i-1].end_value)
+							ctx.fillRect(xcood-20,ycood_start,40,ycood_end-ycood_start);
+						else
+							ctx.fillRect(xcood-20,ycood_end,40,ycood_start-ycood_end);
+
+
+						if(array[i-1].start_value>array[i-1].end_value){
+							paintline(xcood,ycood_max,xcood,ycood_start);
+							paintline(xcood,ycood_end,xcood,ycood_min);
+						}
+						else{
+							paintline(xcood,ycood_max,xcood,ycood_end);
+							paintline(xcood,ycood_start,xcood,ycood_min);
+						}
+
+
+
+					}
+
+				}
+		</script>
+		<br/>
+		<br/>
+		</body>
+		<input type="text" id="json" style="height: 100px;width: 800px"></input>
+		<input type="button" onclick="load_fromdata()">更新显示</input>
+</body>
+</html>
+
+\end{lstlisting}
