@@ -24,11 +24,11 @@
 个存储单位表示该采样数据。我们把这个结论可以推广到一般情况。假设我们采样的某一维时序数据由n个采样值组成，每个部分的内容在存储文件中的出现概率分别为
 p1、p2、...pn。那么，替代符号占据的存储单位最少为下面这个表达式：
 \begin{equation}
-log2(1/p1) + log2(1/p2) + ... + log2(1/pn)= ∑ log2(1/pn)
+$log_{2}(1/p1) + log_{2}(1/p2) + ... + log_{2}(1/pn)= \sum_{1}^{n}log_{2}(1/pn)$
 \end{equation}
 考虑单个采样值，它对应的存储单位为：
 \begin{equation}
-∑ log2(1/pn) / n= log2(1/p1)/n + log2(1/p2)/n + ... + log2(1/pn)/n
+∑ log_{2}(1/pn) / n= log_{2}(1/p1)/n + log_{2}(1/p2)/n + ... + log_{2}(1/pn)/n
 \end{equation}
 
 
